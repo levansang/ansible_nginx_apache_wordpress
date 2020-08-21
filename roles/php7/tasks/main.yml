@@ -1,0 +1,39 @@
+---
+# tasks file for php7
+- name : install epel-release
+  yum: 
+    name: "{{centos7_epel}}"
+    state: present
+- name : install remi repo
+  yum: 
+    name: "{{centos7_remi}}"
+    state: present
+    #enablerepo: "remi-php72"
+- name: enable remi repo
+  shell: >
+    yum-config-manager --enable remi-php72
+- name : install yum-utils
+  yum: 
+    name: "{{yum_utils}}"
+    state: present
+- name : update
+  yum: 
+    name: '*'
+    state: latest
+- name : install php72
+  yum:
+    name: 
+      - php
+      - php-fpm
+      - php-gd
+      - php-json
+      - php-mbstring
+      - php-mysqlnd
+      - php-xml
+      - php-xmlrpc
+      - php-opcache
+    state: present
+- name: checking
+  shell: 'php -v'
+
+

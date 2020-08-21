@@ -1,0 +1,15 @@
+---
+#install nginx server on centos7
+- name: install nginx
+  yum:
+    name: nginx
+    state: latest
+- name: start nginx 
+  systemd:
+    name: nginx
+    state: started
+- name: turn on nginx service with boot time
+  systemd:
+    name: nginx
+    enabled: yes
+

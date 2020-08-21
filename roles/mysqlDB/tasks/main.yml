@@ -1,0 +1,77 @@
+---
+# tasks file for mysqlDB
+- name: add repo
+  yum:
+    name: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+    state: present
+- name: update
+  yum:
+    name: '*'
+    state: latest
+- name: install mysql-server
+  yum:
+    name:
+      - mysql-server
+      - MySQL-python
+    state: latest
+- name: start mysql
+  systemd:
+    name: mysqld
+    state: started
+- name: check if root password is set
+  shell: >
+    mysqladmin -u root status
+  changed_when: false
+  failed_when: false
+  register: root_pwd_check
+
+- name: set mysql root password for the first times
+  mysql_user:
+    name: root
+    password: "{{mysql_root_password}}"
+    host: localhost
+    state: present
+  when: root_pwd_check.rc == 0
+
+- name: set mysql root passwd for 127.0.0.1
+  mysql_user:
+    name: root
+    password: "{{mysql_root_password}}"
+    host: 127.0.0.1
+    login_user: root
+    login_password: "{{mysql_root_password}}"
+    state: present
+- name: Remove anonymous users
+  mysql_user:
+    name: ''
+    host_all: true
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    state: absent
+
+- name: Create database for wordpress
+  mysql_db:
+    name: "{{ mysql_db_name }}"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+
+- name: Create dbuser for {{ vhost }} wordpress site
+  mysql_user:
+    name: "{{ mysql_db_user }}"
+    password: "{{ mysql_db_password }}"
+    priv: "{{ mysql_db_name }}.*:ALL"
+    host: "{{ item }}"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    state: present
+  with_items:
+    - localhost
+    - 127.0.0.1
+    - "{{ server_web }}"
+    - "{{ server_DB }}"
+#By default, SELinux may not be permitted to establish a TCP connection to MySQL
+- name: Disable SELinux
+  shell: |
+      setenforce 0
+          sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux

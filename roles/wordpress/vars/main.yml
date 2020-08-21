@@ -1,0 +1,16 @@
+---
+# vars file for wordpress
+#server IP Addr
+server_DB: 192.168.34.163
+server_web: 192.168.32.122
+
+#virtual host
+vhost: example.local
+
+#Document root
+document_root: /var/www
+
+#wordpress DB
+mysql_db_user: sanglv
+mysql_db_password: 123456aA@
+mysql_db_name: wordpress01

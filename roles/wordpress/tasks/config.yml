@@ -1,0 +1,4 @@
+---
+# config file for wordpress configuration 
+- name: copy file config 
+  template: src=wp-config.php dest=/var/www/html/wp-config.php

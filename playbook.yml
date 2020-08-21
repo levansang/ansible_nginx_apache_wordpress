@@ -1,0 +1,19 @@
+---
+- hosts: webservers
+  become: yes
+  gather_facts: false
+  vars:
+   ansible_sudo_pass: 1
+  roles:
+    - common
+    - php7
+    - apache
+    - wordpress
+    - nginx
+- hosts: databases
+  become: yes
+  gather_facts: false
+  vars:
+   ansible_sudo_pass: 1
+  roles:
+    - mysqlDB

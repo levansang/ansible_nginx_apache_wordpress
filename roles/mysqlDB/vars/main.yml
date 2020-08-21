@@ -1,0 +1,3 @@
+---
+# vars file for mysqlDB
+mysql_root_password: 1

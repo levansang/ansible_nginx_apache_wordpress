@@ -1,0 +1,6 @@
+---
+#config nginx as reserve proxy
+- name: change config 
+  template: 
+    src=nginx.conf dest=/etc/nginx/nginx.conf
+  notify: reload nginx

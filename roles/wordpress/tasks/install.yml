@@ -1,0 +1,24 @@
+---
+# tasks file for wordpress
+- name: install dependancy
+  yum:
+    name:
+      - php-gd
+    state: latest
+
+- name: get latest source packages
+  shell: |
+    cd /tmp
+    wget http://wordpress.org/latest.tar.gz
+    tar xzvf latest.tar.gz
+    rsync -avP wordpress/ /var/www/html/
+- name: create new directory
+  file:
+    path: /var/www/html/wp-content/uploads
+    state: directory
+    mode: '755'
+- name: change owner
+  file:
+    path: /var/www/html
+    owner: apache
+    group: apache
